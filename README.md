@@ -1,1 +1,1 @@
-Project for the shift register visualisation
+Project for the shift register visualization

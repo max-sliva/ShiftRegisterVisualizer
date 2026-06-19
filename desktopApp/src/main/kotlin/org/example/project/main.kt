@@ -1,6 +1,7 @@
 package org.example.project
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -12,12 +13,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.input.pointer.PointerIcon
+import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
+import org.jetbrains.compose.splitpane.ExperimentalSplitPaneApi
 import org.jetbrains.compose.splitpane.HorizontalSplitPane
 import org.jetbrains.compose.splitpane.VerticalSplitPane
 import org.jetbrains.compose.splitpane.rememberSplitPaneState
+
+import java.awt.Cursor
+
+private fun Modifier.cursorForHorizontalResize(): Modifier =
+    pointerHoverIcon(PointerIcon(Cursor(Cursor.E_RESIZE_CURSOR)))
 
 @Composable
 fun MainWindow() {
@@ -26,13 +35,13 @@ fun MainWindow() {
 
 @Composable
 fun ResizableSplitWindow() {
-    val SplitterState = rememberSplitPaneState()
-    HorizontalSplitPane (
-        splitPaneState = SplitterState
-//        modifier = Modifier.fillMaxSize(),
-//        orientation = Orientation.Vertical, // Left/Right split
-//        dividerThickness = 4.dp,
-//        initialPositionFraction = 0.3f // 30% left, 70% right
+    val splitterState = rememberSplitPaneState()
+    splitterState.moveEnabled = true
+   HorizontalSplitPane (
+        splitPaneState = splitterState,
+        modifier = Modifier
+            .fillMaxSize()
+            .border(5.dp, Color.Gray)
     ) {
         first(150.dp) {
             Column(Modifier.fillMaxSize()) {
@@ -58,7 +67,7 @@ fun ResizableSplitWindow() {
                 Box(
                     Modifier
                         .markAsHandle()
-//                        .cursorForHorizontalResize()
+                        .cursorForHorizontalResize()
                         .background(SolidColor(Color.Gray), alpha = 0.50f)
                         .width(9.dp)
                         .fillMaxHeight()
