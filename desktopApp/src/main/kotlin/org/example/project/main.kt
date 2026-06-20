@@ -37,6 +37,7 @@ fun MainWindow() {
 fun ResizableSplitWindow() {
     val splitterState = rememberSplitPaneState()
     splitterState.moveEnabled = true
+    splitterState.positionPercentage = 0.8F
    HorizontalSplitPane (
         splitPaneState = splitterState,
         modifier = Modifier
