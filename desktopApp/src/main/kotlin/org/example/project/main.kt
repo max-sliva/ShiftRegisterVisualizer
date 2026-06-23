@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -46,7 +47,8 @@ fun ResizableSplitWindow() {
     ) {
         first(150.dp) {
             Column(Modifier.fillMaxSize()) {
-                Text("Left Panel", modifier = Modifier.weight(1f))
+                Text("Left Panel", modifier = Modifier.wrapContentSize())
+                ShiftWorkArea()
             }
         }
 
