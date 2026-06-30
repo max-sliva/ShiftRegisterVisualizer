@@ -51,6 +51,7 @@ fun ResizableSplitWindow() {
             Column(Modifier.fillMaxSize()) {
                 Text("Left Panel", modifier = Modifier.wrapContentSize())
                 ShiftWorkArea()
+//                CanvasWithButton()
             }
         }
 
