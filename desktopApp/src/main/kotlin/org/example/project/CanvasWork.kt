@@ -3,30 +3,43 @@ package org.example.project
 //import org.jetbrains.compose.resources.decodeToImageBitmap
 
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.gestures.detectDragGestures
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.Button
+import androidx.compose.material.DropdownMenu
+import androidx.compose.material.DropdownMenuItem
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.Switch
 import androidx.compose.material.Text
+import androidx.compose.material.TextField
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.decodeToImageBitmap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.scale
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.useResource
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+//import androidx.compose.ui.unit.dp
 import java.io.File
 import java.io.FileInputStream
-import kotlin.math.sqrt
 
 // Helper extension
 private fun Float.pow(exponent: Int): Float = Math.pow(this.toDouble(), exponent.toDouble()).toFloat()
@@ -58,52 +71,28 @@ private fun Float.pow(exponent: Int): Float = Math.pow(this.toDouble(), exponent
 //}
 
 @Composable
-fun CanvasWithButton() {
-    var rectPosition by remember { mutableStateOf(Offset(100f, 100f)) }
-    val rectSize = Size(120f, 80f)
-
-    Box(modifier = Modifier.fillMaxSize()) {
-        // Canvas as background
-        Canvas(modifier = Modifier.fillMaxSize()) {
-            drawRect(
-                color = Color.Blue,
-                topLeft = rectPosition,
-                size = rectSize
-            )
-        }
-
-        // Button overlay
-        Button(
-            onClick = {
-                rectPosition = Offset(
-                    x = (Math.random() * 400).toFloat(),
-                    y = (Math.random() * 300).toFloat()
-                )
-            },
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(16.dp)
-        ) {
-            Text("Move Rectangle")
-        }
-    }
-}
-
-@Composable
 fun ShiftWorkArea() {
 //    val imageBitmap = remember { loadImageFromFile("74ch-1-1.png") }
-    val imageBitmap = useResource("img1.png") { it.readAllBytes().decodeToImageBitmap() }
-    var scale by remember { mutableStateOf(1f) }
+//    val imageBitmap = useResource("img1.png") { it.readAllBytes().decodeToImageBitmap() }
+    val imageBitmap = useResource("withBreadBoard.PNG") { it.readAllBytes().decodeToImageBitmap() }
+    var scale = remember { mutableStateOf(1f) }
+//    var scale2 = scale.value
+    val rectSize = Size(imageBitmap.width.toFloat(), imageBitmap.height.toFloat())
     var initialSize: Size = Size.Zero
     var position by remember { mutableStateOf(Offset(0f, 0f)) }
     var isDragging by remember { mutableStateOf(false) }
-    val rectSize = Size(imageBitmap.width.toFloat(), imageBitmap.height.toFloat())
-    var imageSize by remember { mutableStateOf(rectSize) }
-    Box(modifier = Modifier.fillMaxSize()) {
-        Canvas(
-            modifier = Modifier
-                .fillMaxSize()
-                .pointerInput(Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(end = 20.dp)
+//            .border(width = 5.dp, color = Color.Black)
+    ) {
+     //   Box(modifier = Modifier.fillMaxSize()) {
+            Canvas(
+                modifier = Modifier
+                    .weight(4f)
+                    .border(width = 5.dp, color = Color.Black)
+//                    .pointerInput(Unit) {
 //                    detectDragGestures(
 //                        onDragStart = { startOffset ->
 //                            // Check if drag started inside the object (hit test)
@@ -122,42 +111,126 @@ fun ShiftWorkArea() {
 ////                            imageSize *= scale
 //                        }
 //                    )
+//                    }
+            ) {
+                val canvasQuadrantSize = size / 4F //делим размер канваса на 2
+                if (initialSize == Size.Zero) {
+//                    initialSize = size
+                    initialSize = rectSize
                 }
-        ) {
-            val canvasQuadrantSize = size / 4F //делим размер канваса на 2
-            if (initialSize == Size.Zero) {
-                initialSize = size
-//            scale = initialSize.width / initialSize.width
-            }
-            scale = size.width / initialSize.width
-
-            val canvasWidth = size.width
-            val canvasHeight = size.height
-            scale(scale = scale, pivot = Offset(x = 0f, y = 0f)) {
-                println("initialSize = $initialSize, canvas size = $size")
-                drawImage(
-                    //и выводим его на канвас
-                    image = imageBitmap,
+                scale.value = size.width / initialSize.width
+                val canvasWidth = size.width
+                val canvasHeight = size.height
+                scale(scale = scale.value, pivot = Offset(x = 0f, y = 0f)) {
+                    println("initialSize = $initialSize, canvas size = $size")
+                    drawImage(
+                        //и выводим его на канвас
+                        image = imageBitmap,
 //                topLeft = Offset(x = 0f, y = 0f), //координаты верхнего
-                    topLeft = Offset(x = position.x, y = position.y), //координаты верхнего
-                )
-            }
+//                    topLeft = Offset(x = position.x, y = position.y), //координаты верхнего
+                    )
+                }
 //        drawControl(canvasQuadrantSize, imageBitmap)
-        }
-        Button(
-            onClick = {
-//                rectPosition = Offset(
-//                    x = (Math.random() * 400).toFloat(),
-//                    y = (Math.random() * 300).toFloat()
-//                )
-            },
+            }
+
+     //   }
+        var isRegisterOpened by remember { mutableStateOf(false) }
+        Column(verticalArrangement = Arrangement.Center,
             modifier = Modifier
-//                .offset(x = (rectSize.width * scale).dp, y = ((rectSize.height * scale)/2).dp)
-               // .padding(16.dp)
+                .offset(x = 10.dp, y = 10.dp)
+                .weight(1f)
         ) {
-            Text("Move Rectangle")
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Switch(
+                    checked = isRegisterOpened,
+                    onCheckedChange = {
+                        isRegisterOpened = it
+                    }
+                )
+                Text(text = "Открыть регистр",
+                    modifier = Modifier
+                        .clickable(onClick = { isRegisterOpened = !isRegisterOpened }))
+            }
+            var bitValue by remember { mutableStateOf(0) }
+            Row(verticalAlignment = Alignment.CenterVertically,
+                ) {
+                BinaryPickerDropdown(isRegisterOpened)
+//                TextField(
+//                    value = bitValue.toString(),
+//                    onValueChange = {
+//                        if (it.isNotEmpty() && it.length==1)
+//                            bitValue = it.toInt()
+//                    },
+////                    textAlign = TextAlign.Center,
+//                    placeholder = { "_" },
+//                    singleLine = true,
+//                    modifier = Modifier
+//                        .width(50.dp)
+//                )
+                Button(
+                    onClick = {
+                    },
+                    enabled = isRegisterOpened
+                ) {
+                    Text(text = "Послать\n 1 бит",
+//                        textStyle = TextStyle( //объект для изменения стиля текста
+                            fontSize = 10.sp //увеличиваем шрифт
+//                        ),
+                    )
+                }
+            }
         }
     }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun BinaryPickerDropdown(isRegisterOpened: Boolean) {
+    var value by remember { mutableStateOf(0) }
+    var expanded by remember { mutableStateOf(false) }
+
+    Row {
+//        OutlinedTextField(
+        TextField(
+            value = value.toString(),
+            enabled = false,
+            onValueChange = {},
+            readOnly = true,
+//            label = { Text("0 / 1") },
+            trailingIcon = {
+                    IconButton(onClick = { expanded = !expanded },
+                        modifier = Modifier.scale(0.8f)) {
+                        Icon(imageVector = Icons.Default.ArrowDropDown, contentDescription = null)
+                    }
+            },
+//            textStyle = TextStyle( //объект для изменения стиля текста
+//                fontSize = 10.sp //увеличиваем шрифт
+//            ),
+//            trailingIcon = { Icon(Icons.Default.ArrowDropDown, null) },
+            modifier = Modifier
+                .width(80.dp)
+//                .fillMaxWidth()
+                .clickable { expanded = !expanded }
+        )
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
+            DropdownMenuItem(
+                onClick = { value = 0; expanded = false }
+            ){
+                Text(text = "0")
+            }
+            DropdownMenuItem(
+//                text = { Text("1") },
+                onClick = { value = 1; expanded = false }
+            ){
+                Text(text = "1")
+            }
+
+        }
+    }
+   // Text("Selected: $value")
 }
 
 private fun DrawScope.drawControl(canvasQuadrantSize: Size, imageBitmap: ImageBitmap) {

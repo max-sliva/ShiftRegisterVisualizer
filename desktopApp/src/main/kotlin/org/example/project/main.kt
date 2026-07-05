@@ -55,7 +55,7 @@ fun ResizableSplitWindow() {
             }
         }
 
-        second(120.dp) {
+        second(80.dp) {
             Column(Modifier.fillMaxSize()) {
                 Text("Right Panel", modifier = Modifier.weight(1f))
             }
@@ -87,7 +87,7 @@ fun main() = application {
     Window(
         onCloseRequest = ::exitApplication,
         title = "ShiftRegisterVisualizer",
-        state = WindowState(size = DpSize(1200.dp, 900.dp))
+        state = WindowState(size = DpSize(1200.dp, 600.dp))
     ) {
 //        App()
 //        MainWindow()// { /*println("Closed") */}

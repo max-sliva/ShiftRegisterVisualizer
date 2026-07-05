@@ -11,7 +11,7 @@ dependencies {
 
     implementation(compose.desktop.currentOs)
     implementation(libs.kotlinx.coroutinesSwing)
-
+    implementation("org.jetbrains.compose.material:material-icons-extended:1.7.3")
     implementation(libs.compose.uiToolingPreview)
     implementation("org.jetbrains.compose.components:components-splitpane-desktop:1.11.1")
 }
