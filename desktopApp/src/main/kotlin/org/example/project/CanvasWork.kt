@@ -31,18 +31,21 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.decodeToImageBitmap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.scale
-import androidx.compose.ui.res.useResource
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.jetbrains.compose.resources.imageResource
 //import androidx.compose.ui.unit.dp
 import java.io.File
 import java.io.FileInputStream
+import shiftregistervisualizer.desktopapp.generated.resources.Res
+import shiftregistervisualizer.desktopapp.generated.resources.withBreadBoard
+import kotlin.math.pow
 
 // Helper extension
-private fun Float.pow(exponent: Int): Float = Math.pow(this.toDouble(), exponent.toDouble()).toFloat()
+private fun Float.pow(exponent: Int): Float = this.toDouble().pow(exponent.toDouble()).toFloat()
 
 //@Composable
 //fun DraggableCanvas() {
@@ -74,7 +77,10 @@ private fun Float.pow(exponent: Int): Float = Math.pow(this.toDouble(), exponent
 fun ShiftWorkArea() {
 //    val imageBitmap = remember { loadImageFromFile("74ch-1-1.png") }
 //    val imageBitmap = useResource("img1.png") { it.readAllBytes().decodeToImageBitmap() }
-    val imageBitmap = useResource("withBreadBoard.PNG") { it.readAllBytes().decodeToImageBitmap() }
+//    val imageBitmap = useResource("withBreadBoard.PNG") { it.readAllBytes().decodeToImageBitmap() }
+
+    var imageBitmap = imageResource(Res.drawable.withBreadBoard)
+
     var scale = remember { mutableStateOf(1f) }
 //    var scale2 = scale.value
     val rectSize = Size(imageBitmap.width.toFloat(), imageBitmap.height.toFloat())
