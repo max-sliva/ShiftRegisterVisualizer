@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.MaterialTheme
@@ -36,50 +37,54 @@ fun MainWindow() {
   println("Hello world!")
 }
 
+@OptIn(ExperimentalSplitPaneApi::class)
 @Composable
 fun ResizableSplitWindow() {
     val splitterState = rememberSplitPaneState()
     splitterState.moveEnabled = true
     splitterState.positionPercentage = 0.8F
-   HorizontalSplitPane (
+   VerticalSplitPane (
         splitPaneState = splitterState,
         modifier = Modifier
             .fillMaxSize()
-            .border(5.dp, Color.Gray)
+//            .border(5.dp, Color.Gray)
     ) {
         first(150.dp) {
-            Column(Modifier.fillMaxSize()) {
-                Text("Left Panel", modifier = Modifier.wrapContentSize())
+            Column(Modifier
+                .fillMaxSize()
+                .border(5.dp, Color.Gray)
+            ) {
+                Text("Upper Panel", modifier = Modifier.wrapContentSize())
                 ShiftWorkArea()
 //                CanvasWithButton()
             }
         }
 
-        second(80.dp) {
+        second(40.dp) {
             Column(Modifier.fillMaxSize()) {
-                Text("Right Panel", modifier = Modifier.weight(1f))
+                Text("Bottom Panel", modifier = Modifier.weight(1f))
             }
         }
-        splitter {
-            visiblePart {
-                Box(
-                    Modifier
-                        .width(1.dp)
-                        .fillMaxHeight()
-                        .background(MaterialTheme.colors.background)
-                )
-            }
-            handle {
-                Box(
-                    Modifier
-                        .markAsHandle()
-                        .cursorForHorizontalResize()
-                        .background(SolidColor(Color.Gray), alpha = 0.50f)
-                        .width(9.dp)
-                        .fillMaxHeight()
-                )
-            }
-        }
+//        splitter {
+//            visiblePart {
+//                Box(
+//                    Modifier
+//                        .width(1.dp)
+//                        .fillMaxWidth()
+//                        .background(MaterialTheme.colors.background)
+//                )
+//            }
+//            handle {
+//                Box(
+//                    Modifier
+//                        .markAsHandle()
+//                        .cursorForHorizontalResize()
+//                        .background(SolidColor(Color.Gray), alpha = 0.50f)
+//                        .width(9.dp)
+//                        .fillMaxWidth()
+//                )
+//            }
+//        }
     }
 }
 
@@ -87,7 +92,7 @@ fun main() = application {
     Window(
         onCloseRequest = ::exitApplication,
         title = "ShiftRegisterVisualizer",
-        state = WindowState(size = DpSize(1200.dp, 600.dp))
+        state = WindowState(size = DpSize(1000.dp, 600.dp))
     ) {
 //        App()
 //        MainWindow()// { /*println("Closed") */}

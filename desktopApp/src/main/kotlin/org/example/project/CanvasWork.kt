@@ -34,6 +34,7 @@ import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.jetbrains.compose.resources.imageResource
@@ -87,11 +88,20 @@ fun ShiftWorkArea() {
     var initialSize: Size = Size.Zero
     var position by remember { mutableStateOf(Offset(0f, 0f)) }
     var isDragging by remember { mutableStateOf(false) }
+    var rowHeightDp by remember { mutableStateOf(0) }
     Row(
         modifier = Modifier
             .fillMaxSize()
             .padding(end = 20.dp)
-//            .border(width = 5.dp, color = Color.Black)
+            .border(width = 5.dp, color = Color.Black)
+            .onGloballyPositioned { coordinates ->
+                // Access layout coordinates and extract height in pixels
+                val heightPx = coordinates.size.height
+                // Convert pixels to Dp
+//                rowHeightDp = with(density) { heightPx.toDp() }
+                rowHeightDp = heightPx
+                println("row height = $rowHeightDp")
+            }
     ) {
      //   Box(modifier = Modifier.fillMaxSize()) {
             Canvas(
@@ -124,7 +134,8 @@ fun ShiftWorkArea() {
 //                    initialSize = size
                     initialSize = rectSize
                 }
-                scale.value = size.width / initialSize.width
+//                scale.value = size.width / initialSize.width
+                scale.value = rowHeightDp / initialSize.height
                 val canvasWidth = size.width
                 val canvasHeight = size.height
                 scale(scale = scale.value, pivot = Offset(x = 0f, y = 0f)) {
@@ -153,7 +164,7 @@ fun ShiftWorkArea() {
                         isRegisterOpened = it
                     }
                 )
-                Text(text = "Открыть регистр",
+                Text(text = "${if(isRegisterOpened)"Закрыть" else "Открыть"}  регистр",
                     modifier = Modifier
                         .clickable(onClick = { isRegisterOpened = !isRegisterOpened }))
             }
@@ -184,6 +195,7 @@ fun ShiftWorkArea() {
 //                        ),
                     )
                 }
+                //todo add vertical row with 8 binary array digits
             }
         }
     }
