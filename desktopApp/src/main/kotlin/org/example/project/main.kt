@@ -1,20 +1,13 @@
 package org.example.project
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.input.pointer.PointerIcon
 import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.unit.DpSize
@@ -23,7 +16,6 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.application
 import org.jetbrains.compose.splitpane.ExperimentalSplitPaneApi
-import org.jetbrains.compose.splitpane.HorizontalSplitPane
 import org.jetbrains.compose.splitpane.VerticalSplitPane
 import org.jetbrains.compose.splitpane.rememberSplitPaneState
 
@@ -41,6 +33,9 @@ fun MainWindow() {
 @Composable
 fun ResizableSplitWindow() {
     val splitterState = rememberSplitPaneState()
+    val bitArray = mutableListOf<Boolean>()
+    for(i in 0..7) bitArray.add(false)
+
     splitterState.moveEnabled = true
     splitterState.positionPercentage = 0.8F
    VerticalSplitPane (
@@ -55,7 +50,7 @@ fun ResizableSplitWindow() {
                 .border(5.dp, Color.Gray)
             ) {
                 Text("Upper Panel", modifier = Modifier.wrapContentSize())
-                ShiftWorkArea()
+                ShiftWorkArea(bitArray)
 //                CanvasWithButton()
             }
         }

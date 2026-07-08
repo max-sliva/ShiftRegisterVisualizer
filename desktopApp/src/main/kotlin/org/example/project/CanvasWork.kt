@@ -28,26 +28,26 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.decodeToImageBitmap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.drawscope.DrawStyle
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.jetbrains.compose.resources.imageResource
 //import androidx.compose.ui.unit.dp
-import java.io.File
-import java.io.FileInputStream
 import shiftregistervisualizer.desktopapp.generated.resources.Res
 import shiftregistervisualizer.desktopapp.generated.resources.withBreadBoard
-import kotlin.math.pow
 
 @Composable
-fun ShiftWorkArea() {
+fun ShiftWorkArea(bitArray: MutableList<Boolean>) {
+//    val bitArray = mutableListOf<Boolean>()
+//    for(i in 0..7) bitArray.add(false)
+//    val bitArray = BooleanArray(8)
+    var bitNumber by remember { mutableStateOf(0) }
+
 //    val imageBitmap = remember { loadImageFromFile("74ch-1-1.png") }
 //    val imageBitmap = useResource("img1.png") { it.readAllBytes().decodeToImageBitmap() }
 //    val imageBitmap = useResource("withBreadBoard.PNG") { it.readAllBytes().decodeToImageBitmap() }
@@ -105,14 +105,13 @@ fun ShiftWorkArea() {
                 modifier = Modifier
                     .weight(1f)
             ){
-                val bitArray by mutableStateOf(BooleanArray(8))
                 Column {
-                    //todo add column with 8 binary array digits
                     bitArray.forEach {
                         Text(
                             text = if(it)"1" else "0",
                             modifier = Modifier
                                 .border(width = 1.dp, color = Color.Black)
+                                .padding(5.dp)
                         )
                     }
                 }
@@ -123,28 +122,37 @@ fun ShiftWorkArea() {
                         .offset(x = 10.dp, y = 10.dp)
 //                        .weight(1f)
                 ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Switch( //todo set enabled false until all 8 bits in array are set
+                    var switchIsEnabled by remember { mutableStateOf(true) }
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Switch(
                             checked = isRegisterOpened,
                             onCheckedChange = {
                                 isRegisterOpened = it
-                            }
+                                bitNumber = 0
+                                if (isRegisterOpened) switchIsEnabled = bitNumber >= 7
+                            },
+                            enabled = switchIsEnabled,
                         )
                         Text(
                             text = "${if (isRegisterOpened) "Закрыть" else "Открыть"}  регистр",
                             modifier = Modifier
-                                .clickable(onClick = { isRegisterOpened = !isRegisterOpened })
+                                .clickable(onClick = { if (switchIsEnabled) isRegisterOpened = !isRegisterOpened })
                         )
                     }
                     var bitValue by remember { mutableStateOf(0) }
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        BinaryPickerDropdown(isRegisterOpened)
+                        BinaryPickerDropdown(isRegisterOpened) //todo получать из выпадающего списка выбранный объект и передавать его в кнопку
                         Button(
                             onClick = {
+                                bitArray[bitNumber++] = true
+                                println("${bitArray}, bitNumber = $bitNumber, isRegisterOpened = $isRegisterOpened")
+                                if (isRegisterOpened) switchIsEnabled = bitNumber == 8
                             },
-                            enabled = isRegisterOpened
+                            enabled = isRegisterOpened && bitNumber<8
                         ) {
                             Text(
                                 text = "Послать\n 1 бит",
