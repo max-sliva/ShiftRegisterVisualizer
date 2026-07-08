@@ -61,6 +61,7 @@ fun ShiftWorkArea(bitArray: MutableList<Boolean>) {
     var position by remember { mutableStateOf(Offset(0f, 0f)) }
     var isDragging by remember { mutableStateOf(false) }
     var rowHeightDp by remember { mutableStateOf(0) }
+//    var bitValue by remember { mutableStateOf(0) }
     Row(
         modifier = Modifier
             .fillMaxSize()
@@ -105,17 +106,17 @@ fun ShiftWorkArea(bitArray: MutableList<Boolean>) {
                 modifier = Modifier
                     .weight(1f)
             ){
+                var isRegisterOpened by remember { mutableStateOf(false) }
                 Column {
-                    bitArray.forEach {
+                    bitArray.forEachIndexed { index, value->
                         Text(
-                            text = if(it)"1" else "0",
+                            text = if(value)"1" else "0",
                             modifier = Modifier
-                                .border(width = 1.dp, color = Color.Black)
+                                .border(width = 1.dp, color = if (index!=bitNumber || !isRegisterOpened) Color.Black else Color.Green)
                                 .padding(5.dp)
                         )
                     }
                 }
-                var isRegisterOpened by remember { mutableStateOf(false) }
                 Column(
                     verticalArrangement = Arrangement.Center,
                     modifier = Modifier
@@ -141,14 +142,14 @@ fun ShiftWorkArea(bitArray: MutableList<Boolean>) {
                                 .clickable(onClick = { if (switchIsEnabled) isRegisterOpened = !isRegisterOpened })
                         )
                     }
-                    var bitValue by remember { mutableStateOf(0) }
+                    var bitValue = remember { mutableStateOf(0) }
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        BinaryPickerDropdown(isRegisterOpened) //todo получать из выпадающего списка выбранный объект и передавать его в кнопку
+                        BinaryPickerDropdown(isRegisterOpened, bitValue)
                         Button(
                             onClick = {
-                                bitArray[bitNumber++] = true
+                                bitArray[bitNumber++] = if (bitValue.value==1) true else false
                                 println("${bitArray}, bitNumber = $bitNumber, isRegisterOpened = $isRegisterOpened")
                                 if (isRegisterOpened) switchIsEnabled = bitNumber == 8
                             },
@@ -167,14 +168,14 @@ fun ShiftWorkArea(bitArray: MutableList<Boolean>) {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun BinaryPickerDropdown(isRegisterOpened: Boolean) {
-    var value by remember { mutableStateOf(0) }
+fun BinaryPickerDropdown(isRegisterOpened: Boolean, bitValue: MutableState<Int>) {
+//    var value by remember { mutableStateOf(0) }
     var expanded by remember { mutableStateOf(false) }
 
     Row {
 //        OutlinedTextField(
         TextField(
-            value = value.toString(),
+            value = bitValue.value.toString(),
             enabled = false,
             onValueChange = {},
             readOnly = true,
@@ -199,13 +200,13 @@ fun BinaryPickerDropdown(isRegisterOpened: Boolean) {
             onDismissRequest = { expanded = false }
         ) {
             DropdownMenuItem(
-                onClick = { value = 0; expanded = false }
+                onClick = { bitValue.value = 0; expanded = false }
             ){
                 Text(text = "0")
             }
             DropdownMenuItem(
 //                text = { Text("1") },
-                onClick = { value = 1; expanded = false }
+                onClick = { bitValue.value = 1; expanded = false }
             ){
                 Text(text = "1")
             }
