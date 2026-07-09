@@ -130,6 +130,9 @@ fun ShiftWorkArea(bitArray: MutableList<Boolean>) {
                         Switch(
                             checked = isRegisterOpened,
                             onCheckedChange = {
+                                if (isRegisterOpened) {
+                                    println("Send bit array to register")
+                                }
                                 isRegisterOpened = it
                                 bitNumber = 0
                                 if (isRegisterOpened) switchIsEnabled = bitNumber >= 7
@@ -139,7 +142,14 @@ fun ShiftWorkArea(bitArray: MutableList<Boolean>) {
                         Text(
                             text = "${if (isRegisterOpened) "Закрыть" else "Открыть"}  регистр",
                             modifier = Modifier
-                                .clickable(onClick = { if (switchIsEnabled) isRegisterOpened = !isRegisterOpened })
+                                .clickable(
+                                    onClick = {
+                                        if (switchIsEnabled) {
+                                            isRegisterOpened = !isRegisterOpened
+                                            bitNumber = 0
+                                        }
+                                    }
+                                )
                         )
                     }
                     var bitValue = remember { mutableStateOf(0) }
