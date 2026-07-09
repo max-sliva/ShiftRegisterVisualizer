@@ -33,6 +33,7 @@ import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.drawscope.DrawStyle
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -97,6 +98,15 @@ fun ShiftWorkArea(bitArray: MutableList<Boolean>) {
 //                topLeft = Offset(x = 0f, y = 0f), //координаты верхнего
 //                    topLeft = Offset(x = position.x, y = position.y), //координаты верхнего
                     )
+                    //todo сделать другой битовый массив, в него копировать только при закрытии регистра
+                    bitArray.forEachIndexed { index, bitVal ->
+                        if (bitVal)
+                            drawCircle(
+                                color = Color.White,
+                                radius = 20f,
+                                center = Offset(60f, (index*70)+30f)
+                            )
+                    }
                 }
 //        drawControl(canvasQuadrantSize, imageBitmap)
             }
