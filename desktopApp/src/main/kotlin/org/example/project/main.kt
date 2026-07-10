@@ -34,7 +34,11 @@ fun MainWindow() {
 fun ResizableSplitWindow() {
     val splitterState = rememberSplitPaneState()
     val bitArray = mutableListOf<Boolean>()
-    for(i in 0..7) bitArray.add(false)
+    val ledArray = mutableListOf<Boolean>()
+    for(i in 0..7) {
+        bitArray.add(false)
+        ledArray.add(false)
+    }
 
     splitterState.moveEnabled = true
     splitterState.positionPercentage = 0.8F
@@ -50,7 +54,7 @@ fun ResizableSplitWindow() {
                 .border(5.dp, Color.Gray)
             ) {
                 Text("Upper Panel", modifier = Modifier.wrapContentSize())
-                ShiftWorkArea(bitArray)
+                ShiftWorkArea(bitArray, ledArray)
 //                CanvasWithButton()
             }
         }

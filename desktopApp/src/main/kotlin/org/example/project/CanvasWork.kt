@@ -33,7 +33,6 @@ import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.drawscope.DrawStyle
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -41,10 +40,11 @@ import org.jetbrains.compose.resources.imageResource
 //import androidx.compose.ui.unit.dp
 import shiftregistervisualizer.desktopapp.generated.resources.Res
 import shiftregistervisualizer.desktopapp.generated.resources.withBreadBoard
+import kotlin.math.min
 
 @Composable
-fun ShiftWorkArea(bitArray: MutableList<Boolean>) {
-//    val bitArray = mutableListOf<Boolean>()
+fun ShiftWorkArea(bitArray: MutableList<Boolean>, ledArray: MutableList<Boolean>) {
+//    var ledArray = remember {  mutableListOf<Boolean>()}
 //    for(i in 0..7) bitArray.add(false)
 //    val bitArray = BooleanArray(8)
     var bitNumber by remember { mutableStateOf(0) }
@@ -61,18 +61,23 @@ fun ShiftWorkArea(bitArray: MutableList<Boolean>) {
     var initialSize: Size = Size.Zero
     var position by remember { mutableStateOf(Offset(0f, 0f)) }
     var isDragging by remember { mutableStateOf(false) }
-    var rowHeightDp by remember { mutableStateOf(0) }
+    var canvasRowHeightDp by remember { mutableStateOf(0) }
+    var canvasRowWidthDp by remember { mutableStateOf(0) }
+    var switchRowHeightDp by remember { mutableStateOf(0) }
+    var switchRowWidthDp by remember { mutableStateOf(0) }
 //    var bitValue by remember { mutableStateOf(0) }
     Row(
         modifier = Modifier
             .fillMaxSize()
             .padding(end = 20.dp)
             .border(width = 5.dp, color = Color.Black)
-            .onGloballyPositioned { coordinates -> //для получения высоты ряда, чтобы скейлить картинку
+            .onGloballyPositioned { coordinates -> //для получения высоты и ширины ряда, чтобы скейлить картинку
                 // Access layout coordinates and extract height in pixels
                 val heightPx = coordinates.size.height
-                rowHeightDp = heightPx
-                println("row height = $rowHeightDp")
+                val widthPx = coordinates.size.width
+                canvasRowHeightDp = heightPx
+                canvasRowWidthDp = widthPx
+                println("row height = $canvasRowHeightDp")
             }
     ) {
             Canvas(
@@ -86,7 +91,7 @@ fun ShiftWorkArea(bitArray: MutableList<Boolean>) {
                     initialSize = rectSize
                 }
 //                scale.value = size.width / initialSize.width
-                scale.value = (rowHeightDp-100) / initialSize.height
+                scale.value = min((canvasRowHeightDp-100) / initialSize.height, (canvasRowWidthDp-switchRowWidthDp) / initialSize.width)
                 val canvasWidth = size.width
                 val canvasHeight = size.height
                 scale(scale = scale.value, pivot = Offset(x = 0f, y = 0f)) {
@@ -98,13 +103,12 @@ fun ShiftWorkArea(bitArray: MutableList<Boolean>) {
 //                topLeft = Offset(x = 0f, y = 0f), //координаты верхнего
 //                    topLeft = Offset(x = position.x, y = position.y), //координаты верхнего
                     )
-                    //todo сделать другой битовый массив, в него копировать только при закрытии регистра
-                    bitArray.forEachIndexed { index, bitVal ->
+                    ledArray.forEachIndexed { index, bitVal ->
                         if (bitVal)
                             drawCircle(
                                 color = Color.White,
                                 radius = 20f,
-                                center = Offset(60f, (index*70)+30f)
+                                center = Offset(60f, if (index<6) (index*70)+30f else (index*70)+40f)
                             )
                     }
                 }
@@ -115,6 +119,13 @@ fun ShiftWorkArea(bitArray: MutableList<Boolean>) {
             Row(
                 modifier = Modifier
                     .weight(1f)
+                    .onGloballyPositioned{coordinates ->
+//                        val heightPx = coordinates.size.height
+                        val widthPx = coordinates.size.width
+//                        switchRowHeightDp = heightPx
+                        switchRowWidthDp = widthPx
+                    }
+
             ){
                 var isRegisterOpened by remember { mutableStateOf(false) }
                 Column {
@@ -142,6 +153,10 @@ fun ShiftWorkArea(bitArray: MutableList<Boolean>) {
                             onCheckedChange = {
                                 if (isRegisterOpened) {
                                     println("Send bit array to register")
+                                    bitArray.forEachIndexed { index, bitVal ->
+                                        ledArray[index] = bitVal
+                                    }
+                                    println("ledArray = $ledArray")
                                 }
                                 isRegisterOpened = it
                                 bitNumber = 0
