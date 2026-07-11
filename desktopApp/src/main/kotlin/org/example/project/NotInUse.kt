@@ -1,7 +1,11 @@
 package org.example.project
 
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.decodeToImageBitmap
+import androidx.compose.ui.graphics.drawscope.DrawScope
 import java.io.File
 import java.io.FileInputStream
 import kotlin.math.pow
@@ -40,6 +44,20 @@ fun loadImageFromFile(path: String): ImageBitmap {
         // loadImageBitmap is a top‑level extension function that reads from an InputStream
         inputStream.readAllBytes().decodeToImageBitmap()
     }
+}
+
+private fun DrawScope.drawControl(canvasQuadrantSize: Size, imageBitmap: ImageBitmap) {
+    drawRect( //то рисуем его
+        color = Color.Black, //цвет рисования
+        size = canvasQuadrantSize //размер
+    )
+//или "/sdcard/face.png" на некоторых устройствах
+    drawImage( //и выводим его на канвас
+        image = imageBitmap,
+        topLeft = Offset(x = 0f, y = 0f), //координаты верхнего
+
+//        size = canvasQuadrantSize
+    )
 }
 
 //Canvas(

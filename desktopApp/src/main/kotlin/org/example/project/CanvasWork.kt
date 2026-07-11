@@ -85,21 +85,17 @@ fun ShiftWorkArea(bitArray: MutableList<Boolean>, ledArray: MutableList<Boolean>
                     .weight(4f)
                     .border(width = 5.dp, color = Color.Black)
             ) {
-                val canvasQuadrantSize = size / 4F //делим размер канваса на 2
                 if (initialSize == Size.Zero) {
-//                    initialSize = size
                     initialSize = rectSize
                 }
 //                scale.value = size.width / initialSize.width
-                scale.value = min((canvasRowHeightDp-100) / initialSize.height, (canvasRowWidthDp-switchRowWidthDp) / initialSize.width)
+                scale.value = min((canvasRowHeightDp-50) / initialSize.height, (canvasRowWidthDp-switchRowWidthDp) / initialSize.width)
                 val canvasWidth = size.width
                 val canvasHeight = size.height
                 scale(scale = scale.value, pivot = Offset(x = 0f, y = 0f)) {
                     println("initialSize = $initialSize, canvas size = $size")
                     drawImage(
-                        //и выводим его на канвас
                         image = imageBitmap,
-//                        style = DrawStyle.
 //                topLeft = Offset(x = 0f, y = 0f), //координаты верхнего
 //                    topLeft = Offset(x = position.x, y = position.y), //координаты верхнего
                     )
@@ -112,10 +108,8 @@ fun ShiftWorkArea(bitArray: MutableList<Boolean>, ledArray: MutableList<Boolean>
                             )
                     }
                 }
-//        drawControl(canvasQuadrantSize, imageBitmap)
             }
 
-     //   }
             Row(
                 modifier = Modifier
                     .weight(1f)
@@ -133,7 +127,7 @@ fun ShiftWorkArea(bitArray: MutableList<Boolean>, ledArray: MutableList<Boolean>
                         Text(
                             text = if(value)"1" else "0",
                             modifier = Modifier
-                                .border(width = 1.dp, color = if (index!=bitNumber || !isRegisterOpened) Color.Black else Color.Green)
+                                .border(width = 1.dp, color = if (index!=(7-bitNumber) || !isRegisterOpened) Color.Black else Color.Green)
                                 .padding(5.dp)
                         )
                     }
@@ -184,7 +178,7 @@ fun ShiftWorkArea(bitArray: MutableList<Boolean>, ledArray: MutableList<Boolean>
                         BinaryPickerDropdown(isRegisterOpened, bitValue)
                         Button(
                             onClick = {
-                                bitArray[bitNumber++] = if (bitValue.value==1) true else false
+                                bitArray[7-bitNumber++] = if (bitValue.value==1) true else false //заполняем массив с конца, как и нужно для регистра
                                 println("${bitArray}, bitNumber = $bitNumber, isRegisterOpened = $isRegisterOpened")
                                 if (isRegisterOpened) switchIsEnabled = bitNumber == 8
                             },
@@ -240,7 +234,6 @@ fun BinaryPickerDropdown(isRegisterOpened: Boolean, bitValue: MutableState<Int>)
                 Text(text = "0")
             }
             DropdownMenuItem(
-//                text = { Text("1") },
                 onClick = { bitValue.value = 1; expanded = false }
             ){
                 Text(text = "1")
@@ -248,20 +241,6 @@ fun BinaryPickerDropdown(isRegisterOpened: Boolean, bitValue: MutableState<Int>)
 
         }
     }
-   // Text("Selected: $value")
 }
 
-private fun DrawScope.drawControl(canvasQuadrantSize: Size, imageBitmap: ImageBitmap) {
-    drawRect( //то рисуем его
-        color = Color.Black, //цвет рисования
-        size = canvasQuadrantSize //размер
-    )
-//или "/sdcard/face.png" на некоторых устройствах
-    drawImage( //и выводим его на канвас
-        image = imageBitmap,
-        topLeft = Offset(x = 0f, y = 0f), //координаты верхнего
-
-//        size = canvasQuadrantSize
-    )
-}
 
