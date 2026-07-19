@@ -89,7 +89,7 @@ fun ShiftWorkArea(bitArray: MutableList<Boolean>, ledArray: MutableList<Boolean>
                     initialSize = rectSize
                 }
 //                scale.value = size.width / initialSize.width
-                scale.value = min((canvasRowHeightDp-50) / initialSize.height, (canvasRowWidthDp-switchRowWidthDp) / initialSize.width)
+                scale.value = min((canvasRowHeightDp-30) / initialSize.height, (canvasRowWidthDp-switchRowWidthDp) / initialSize.width)
                 val canvasWidth = size.width
                 val canvasHeight = size.height
                 scale(scale = scale.value, pivot = Offset(x = 0f, y = 0f)) {

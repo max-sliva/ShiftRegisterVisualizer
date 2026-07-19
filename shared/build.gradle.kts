@@ -19,6 +19,9 @@ kotlin {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
+            implementation(libs.syntaxmp)
+//            implementation(libs.compose.codeview.core)
+//            implementation(libs.compose.codeview)
 //            implementation(compose.components.resources)
 //            implementation("org.jetbrains.compose.components:components-resources:1.7.3")
         }
