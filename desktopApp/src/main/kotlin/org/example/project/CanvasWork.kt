@@ -101,7 +101,7 @@ fun ShiftWorkArea(bitArray: MutableList<Boolean>, ledArray: MutableList<Boolean>
                     )
                     ledArray.forEachIndexed { index, bitVal ->
                         if (bitVal)
-                            drawCircle(
+                            drawCircle( //todo проверить на проекторе, сделать кайму другого цвета
                                 color = Color.White,
                                 radius = 20f,
                                 center = Offset(60f, if (index<6) (index*70)+30f else (index*70)+40f)
@@ -160,15 +160,15 @@ fun ShiftWorkArea(bitArray: MutableList<Boolean>, ledArray: MutableList<Boolean>
                         )
                         Text(
                             text = "${if (isRegisterOpened) "Закрыть" else "Открыть"}  регистр",
-                            modifier = Modifier
-                                .clickable(
-                                    onClick = {
-                                        if (switchIsEnabled) {
-                                            isRegisterOpened = !isRegisterOpened
-                                            bitNumber = 0
-                                        }
-                                    }
-                                )
+//                            modifier = Modifier
+//                                .clickable(
+//                                    onClick = {
+//                                        if (switchIsEnabled) {
+//                                            isRegisterOpened = !isRegisterOpened
+//                                            bitNumber = 0
+//                                        }
+//                                    }
+//                                )
                         )
                     }
                     var bitValue = remember { mutableStateOf(0) }

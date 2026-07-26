@@ -11,9 +11,7 @@ package org.example.project
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.text.BasicText
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -21,6 +19,7 @@ import androidx.compose.ui.input.pointer.PointerIcon
 import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -95,7 +94,11 @@ fun ResizableSplitWindow() {
 //                Text("Bottom Panel", modifier = Modifier.weight(1f))
                 val eng = SyntaxTokenizer()
 //                eng.
-                CodeSnippet(text, "CPP", eng, SyntaxTheme.DefaultLight)
+                var i = 0
+                text.lines().forEach {
+                    val underLine = i%2
+                    CodeSnippet("${i++}  $it", "CPP", eng, SyntaxTheme.DefaultLight, underLine)
+                }
             }
         }
 //        splitter {
@@ -127,6 +130,7 @@ fun CodeSnippet(
     languageLabel: String?,
     engine: SyntaxTokenizer,
     theme: SyntaxTheme,
+    underLine: Int,
 ) {
     BasicText(
         text = rememberSyntaxAnnotatedString(
@@ -135,7 +139,11 @@ fun CodeSnippet(
             engine = engine,
             theme = theme,
         ),
-        style = TextStyle(fontFamily = FontFamily.Monospace, fontSize = 14.sp),
+        style = TextStyle(
+            fontFamily = FontFamily.Monospace,
+            fontSize = 14.sp,
+            textDecoration = if (underLine==1) TextDecoration.Underline else TextDecoration.None,
+        )
     )
 }
 
