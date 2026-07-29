@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.PointerIcon
@@ -53,6 +55,7 @@ fun ResizableSplitWindow() {
         ledArray.add(false)
     }
 
+    var curStep = remember { mutableStateOf<Int?>(6) }
     splitterState.moveEnabled = true
     splitterState.positionPercentage = 0.8F
    VerticalSplitPane (
@@ -67,7 +70,7 @@ fun ResizableSplitWindow() {
                 .border(5.dp, Color.Gray)
             ) {
 //                Text("Upper Panel", modifier = Modifier.wrapContentSize())
-                ShiftWorkArea(bitArray, ledArray)
+                ShiftWorkArea(bitArray, ledArray, curStep)
 //                CanvasWithButton()
             }
         }
@@ -83,20 +86,19 @@ fun ResizableSplitWindow() {
         //она позволяет синхронизировать передачу данных на сдвиговый регистр
         digitalWrite(STCP_pin, LOW); //открываем сдвиговый регистр на прием данных
         for (int i = 7; i >= 0; i--){
-          digitalWrite(SHCP_pin, LOW); //открываем порт регистра для приема 1 значения
-          digitalWrite(DS_pin, registers[i] ); //посылаем логическое значение в
-                                                            //сдвиговый регистр
+           digitalWrite(SHCP_pin, LOW); //открываем порт регистра для приема 1 значения
+           digitalWrite(DS_pin, registers[i] ); //посылаем логическое значение в сдвиговый регистр
           digitalWrite(SHCP_pin, HIGH); //закрываем порт регистра для приема
-        }
-        digitalWrite(STCP_pin, HIGH); //закрываем сдвиговый регистр
-     }
-                """.trimIndent() //todo загружать код из файла ,продумать работу с каждой строкой, чтобы можно было подчеркивать
+       }
+       digitalWrite(STCP_pin, HIGH); //закрываем сдвиговый регистр
+    }
+                """.trimIndent() //todo загружать код из файла
 //                Text("Bottom Panel", modifier = Modifier.weight(1f))
                 val eng = SyntaxTokenizer()
 //                eng.
                 var i = 0
                 text.lines().forEach {
-                    val underLine = i%2
+                    val underLine = i == curStep.value
                     CodeSnippet("${i++}  $it", "CPP", eng, SyntaxTheme.DefaultLight, underLine)
                 }
             }
@@ -130,7 +132,7 @@ fun CodeSnippet(
     languageLabel: String?,
     engine: SyntaxTokenizer,
     theme: SyntaxTheme,
-    underLine: Int,
+    underLine: Boolean,
 ) {
     BasicText(
         text = rememberSyntaxAnnotatedString(
@@ -141,8 +143,8 @@ fun CodeSnippet(
         ),
         style = TextStyle(
             fontFamily = FontFamily.Monospace,
-            fontSize = 14.sp,
-            textDecoration = if (underLine==1) TextDecoration.Underline else TextDecoration.None,
+            fontSize = 16.sp,
+            textDecoration = if (underLine) TextDecoration.Underline else TextDecoration.None,
         )
     )
 }

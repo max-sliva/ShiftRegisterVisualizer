@@ -1,7 +1,6 @@
 package org.example.project
 
 //import org.jetbrains.compose.resources.decodeToImageBitmap
-
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.border
@@ -27,8 +26,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
@@ -43,7 +40,7 @@ import shiftregistervisualizer.desktopapp.generated.resources.withBreadBoard
 import kotlin.math.min
 
 @Composable
-fun ShiftWorkArea(bitArray: MutableList<Boolean>, ledArray: MutableList<Boolean>) {
+fun ShiftWorkArea(bitArray: MutableList<Boolean>, ledArray: MutableList<Boolean>, curStep: MutableState<Int?>) {
 //    var ledArray = remember {  mutableListOf<Boolean>()}
 //    for(i in 0..7) bitArray.add(false)
 //    val bitArray = BooleanArray(8)
@@ -119,7 +116,6 @@ fun ShiftWorkArea(bitArray: MutableList<Boolean>, ledArray: MutableList<Boolean>
 //                        switchRowHeightDp = heightPx
                         switchRowWidthDp = widthPx
                     }
-
             ){
                 var isRegisterOpened by remember { mutableStateOf(false) }
                 Column {
@@ -145,13 +141,16 @@ fun ShiftWorkArea(bitArray: MutableList<Boolean>, ledArray: MutableList<Boolean>
                         Switch(
                             checked = isRegisterOpened,
                             onCheckedChange = {
+                                curStep.value = 8
                                 if (isRegisterOpened) {
                                     println("Send bit array to register")
                                     bitArray.forEachIndexed { index, bitVal ->
                                         ledArray[index] = bitVal
                                     }
                                     println("ledArray = $ledArray")
+                                    curStep.value = 6
                                 }
+                                println("curStep = ${curStep.value}")
                                 isRegisterOpened = it
                                 bitNumber = 0
                                 if (isRegisterOpened) switchIsEnabled = bitNumber >= 7
@@ -175,12 +174,14 @@ fun ShiftWorkArea(bitArray: MutableList<Boolean>, ledArray: MutableList<Boolean>
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        BinaryPickerDropdown(isRegisterOpened, bitValue)
+                        BinaryPickerDropdown(isRegisterOpened, bitValue, curStep)
                         Button(
                             onClick = {
+                                curStep.value = 8
                                 bitArray[7-bitNumber++] = if (bitValue.value==1) true else false //заполняем массив с конца, как и нужно для регистра
                                 println("${bitArray}, bitNumber = $bitNumber, isRegisterOpened = $isRegisterOpened")
                                 if (isRegisterOpened) switchIsEnabled = bitNumber == 8
+                                if (switchIsEnabled) curStep.value = 12
                             },
                             enabled = isRegisterOpened && bitNumber<8
                         ) {
@@ -197,7 +198,7 @@ fun ShiftWorkArea(bitArray: MutableList<Boolean>, ledArray: MutableList<Boolean>
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun BinaryPickerDropdown(isRegisterOpened: Boolean, bitValue: MutableState<Int>) {
+fun BinaryPickerDropdown(isRegisterOpened: Boolean, bitValue: MutableState<Int>, curStep: MutableState<Int?>) {
 //    var value by remember { mutableStateOf(0) }
     var expanded by remember { mutableStateOf(false) }
 
@@ -210,7 +211,13 @@ fun BinaryPickerDropdown(isRegisterOpened: Boolean, bitValue: MutableState<Int>)
             readOnly = true,
 //            label = { Text("0 / 1") },
             trailingIcon = {
-                    IconButton(onClick = { expanded = !expanded },
+                    IconButton(
+                        onClick = {
+                            expanded = !expanded
+                            if (expanded) {
+                                curStep.value = 9
+                            }
+                        },
                         modifier = Modifier.scale(0.8f)) {
                         Icon(imageVector = Icons.Default.ArrowDropDown, contentDescription = null)
                     }
@@ -222,19 +229,21 @@ fun BinaryPickerDropdown(isRegisterOpened: Boolean, bitValue: MutableState<Int>)
             modifier = Modifier
                 .width(80.dp)
 //                .fillMaxWidth()
-                .clickable { expanded = !expanded }
+                .clickable {
+                    expanded = !expanded
+                }
         )
-        DropdownMenu(
+        DropdownMenu( //todo сделать, чтобы не работало, если кнопка "Послать\n 1 бит" не активна
             expanded = expanded,
             onDismissRequest = { expanded = false }
         ) {
             DropdownMenuItem(
-                onClick = { bitValue.value = 0; expanded = false }
+                onClick = { bitValue.value = 0; expanded = false;  curStep.value = 10}
             ){
                 Text(text = "0")
             }
             DropdownMenuItem(
-                onClick = { bitValue.value = 1; expanded = false }
+                onClick = { bitValue.value = 1; expanded = false;  curStep.value = 10 }
             ){
                 Text(text = "1")
             }

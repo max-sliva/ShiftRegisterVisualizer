@@ -6,8 +6,7 @@
 	digitalWrite(STCP_pin, LOW); //открываем сдвиговый регистр на прием данных
 	for (int i = 7; i >= 0; i--){
 	  digitalWrite(SHCP_pin, LOW); //открываем порт регистра для приема 1 значения
-	  digitalWrite(DS_pin, registers[i] ); //посылаем логическое значение в
-														//сдвиговый регистр
+	  digitalWrite(DS_pin, registers[i] ); //посылаем логическое значение в сдвиговый регистр
 	  digitalWrite(SHCP_pin, HIGH); //закрываем порт регистра для приема
 	}
 	digitalWrite(STCP_pin, HIGH); //закрываем сдвиговый регистр
